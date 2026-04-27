@@ -1,0 +1,6 @@
+.import/
+.export/
+.mono/
+data_*/
+*.translation
+export_presets.cfg

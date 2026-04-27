@@ -1,0 +1,5 @@
+res://word_search_game.tscn
+res://words.txt
+res://word_search_config.gd
+res://word_search_controller.gd
+res://word_search_generator.gd

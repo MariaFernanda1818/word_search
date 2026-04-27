@@ -1,0 +1,8 @@
+63f7b34db8d8cdea90c76aacccf841ec
+::res://::1777268710
+words.txt::TextFile::-1::1777249044::0::1::::<><><>0<>0<><>::
+word_list_panel.gd::GDScript::4227253051518974047::1777268050::0::1::::WordListPanel<>RefCounted<><>0<>0<><>::
+word_search_config.gd::GDScript::9200250973650352445::1777268187::0::1::::WordSearchConfig<>RefCounted<><>0<>0<><>::
+word_search_controller.gd::GDScript::870851010093943018::1777268689::0::1::::<>Control<><>0<>0<><>::
+word_search_game.tscn::PackedScene::7482009698561396410::1777268689::0::1::::<><><>0<>0<><>::uid://mn3128b57fl7::::res://word_search_controller.gd
+word_search_generator.gd::GDScript::7418023747926011148::1777268260::0::1::::WordSearchGenerator<>RefCounted<><>0<>0<><>::
