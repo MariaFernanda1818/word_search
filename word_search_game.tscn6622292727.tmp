@@ -1,0 +1,39 @@
+[gd_scene format=3 uid="uid://deuluvh2oudpq"]
+
+[ext_resource type="Script" uid="uid://mn3128b57fl7" path="res://word_search_controller.gd" id="1_763j4"]
+
+[node name="WordSearchGame" type="Control" unique_id=1995740610]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+script = ExtResource("1_763j4")
+
+[node name="Button" type="Button" parent="." unique_id=1977297633]
+layout_mode = 0
+offset_right = 8.0
+offset_bottom = 8.0
+text = "Validar"
+
+[node name="Label" type="Label" parent="." unique_id=1039923130]
+custom_minimum_size = Vector2(80, 30)
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Encuentra las palabras"
+
+[node name="WordsLabel" type="Label" parent="." unique_id=139123517]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="GridScroll" type="ScrollContainer" parent="." unique_id=1920409423]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="GridContainer" type="GridContainer" parent="GridScroll" unique_id=1021304910]
+layout_mode = 2
+columns = 8
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

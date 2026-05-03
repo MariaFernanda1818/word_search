@@ -32,8 +32,4 @@ layout_mode = 0
 offset_right = 40.0
 offset_bottom = 40.0
 
-[node name="GridContainer" type="GridContainer" parent="GridScroll" unique_id=1021304910]
-layout_mode = 2
-columns = 8
-
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

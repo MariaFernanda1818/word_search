@@ -13,6 +13,11 @@ config_version=5
 config/name="word-search"
 config/features=PackedStringArray("4.6", "GL Compatibility")
 
+[display]
+
+window/size/viewport_width=1450
+window/size/viewport_height=850
+
 [physics]
 
 3d/physics_engine="Jolt Physics"

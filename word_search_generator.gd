@@ -22,12 +22,6 @@ var cols := 0
 ##
 # Matriz bidimensional que almacena todas las letras
 # visibles en la sopa de letras.
-#
-# Ejemplo:
-# [
-#   ["G","O","D","O","T"],
-#   ["A","B","C","D","E"]
-# ]
 ##
 var letters := []
 
@@ -35,11 +29,6 @@ var letters := []
 ##
 # Diccionario que almacena las posiciones exactas
 # donde fue ubicada cada palabra dentro de la grilla.
-#
-# Ejemplo:
-# {
-#   "GODOT": [Vector2i(0,0), Vector2i(1,0), ...]
-# }
 ##
 var word_positions := {}
 
@@ -69,10 +58,9 @@ func calculate_grid_size(words: Array) -> Vector2i:
 	var estimated_size := int(ceil(sqrt(float(words.size() * 12))))
 
 	var final_size := maxi(
-		longest_word + 2,
+		longest_word,
 		estimated_size
 	)
-
 	rows = final_size
 	cols = final_size
 

@@ -1,29 +1,10 @@
 class_name WordSearchConfig
 
-##
-# Cantidad máxima de palabras que se seleccionarán
-# aleatoriamente desde el archivo words.txt
-#
-# Ejemplo:
-# Si el archivo tiene 100 palabras y el valor es 5,
-# solo se usarán 5 palabras por partida.
-##
-const WORDS_TO_SELECT := 30
 
 
-##
-# Ruta del archivo de texto que contiene todas las palabras
-# disponibles para la sopa de letras.
-#
-# Cada línea del archivo representa una palabra.
-#
-# Ejemplo:
-# GODOT
-# JUEGO
-# PROGRAMA
-# CODIGO
-##
-const WORDS_FILE := "res://words.txt"
+const WORDS_TECHNOLOGY_FILE := "res://words/tecnologia.txt"
+const WORDS_EDUCATION_FILE := "res://words/educacion.txt"
+const WORDS_NATURE_FILE := "res://words/naturaleza.txt"
 
 
 ##
@@ -34,7 +15,6 @@ const WORDS_FILE := "res://words.txt"
 ##
 const ALPHABET := "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 
-
 ##
 # Número máximo de intentos permitidos para ubicar
 # una palabra dentro de la sopa de letras.
@@ -43,3 +23,34 @@ const ALPHABET := "ABCDEFGHIJKLMNÑOPQRSTUVWXYZ"
 # se omite la palabra y se muestra un mensaje en consola.
 ##
 const MAX_ATTEMPTS := 200
+
+##
+# Configuración de los 3 niveles.
+# Puedes cambiar cantidad de palabras y tiempo por nivel.
+##
+const LEVELS := [
+	{
+		"name": "Nivel 1",
+		"words": 5,
+		"time": 180,
+		"cols": 15,
+		"rows": 9,
+		"theme": "technology"
+	},
+	{
+		"name": "Nivel 2",
+		"words": 8,
+		"time": 200,
+		"cols": 17,
+		"rows": 10,
+		"theme": "education"
+	},
+	{
+		"name": "Nivel 3",
+		"words": 10,
+		"time": 220,
+		"cols": 19,
+		"rows": 11,
+		"theme": "nature"
+	}
+]
