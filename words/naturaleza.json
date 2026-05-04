@@ -1,0 +1,122 @@
+[
+  {
+	"name": "ARBOL",
+	"definition": "Planta de tallo leñoso que produce oxígeno, brinda sombra y ayuda al equilibrio del ecosistema."
+  },
+  {
+	"name": "BOSQUE",
+	"definition": "Ecosistema formado por muchos árboles, plantas y animales que conviven en un mismo espacio natural."
+  },
+  {
+	"name": "RIO",
+	"definition": "Corriente natural de agua dulce que fluye por la superficie terrestre."
+  },
+  {
+	"name": "MONTAÑA",
+	"definition": "Elevación natural del terreno que puede albergar diferentes ecosistemas y especies."
+  },
+  {
+	"name": "FLOR",
+	"definition": "Parte de algunas plantas relacionada con la reproducción y la formación de frutos o semillas."
+  },
+  {
+	"name": "HOJA",
+	"definition": "Parte de la planta que ayuda a realizar la fotosíntesis y el intercambio de gases."
+  },
+  {
+	"name": "RAIZ",
+	"definition": "Parte de la planta que la fija al suelo y absorbe agua y nutrientes."
+  },
+  {
+	"name": "TIERRA",
+	"definition": "Suelo donde crecen plantas y viven muchos organismos."
+  },
+  {
+	"name": "LLUVIA",
+	"definition": "Agua que cae de las nubes hacia la superficie terrestre y ayuda al ciclo del agua."
+  },
+  {
+	"name": "VIENTO",
+	"definition": "Movimiento natural del aire que puede transportar semillas, polen y humedad."
+  },
+  {
+	"name": "SOL",
+	"definition": "Estrella que proporciona luz y energía, fundamentales para la vida en la Tierra."
+  },
+  {
+	"name": "LUNA",
+	"definition": "Satélite natural de la Tierra que influye en fenómenos como las mareas."
+  },
+  {
+	"name": "NUBE",
+	"definition": "Conjunto de pequeñas gotas de agua o cristales de hielo suspendidos en la atmósfera."
+  },
+  {
+	"name": "SEMILLA",
+	"definition": "Estructura que puede dar origen a una nueva planta cuando encuentra condiciones adecuadas."
+  },
+  {
+	"name": "PLANTA",
+	"definition": "Ser vivo que generalmente produce su propio alimento mediante la fotosíntesis."
+  },
+  {
+	"name": "ANIMAL",
+	"definition": "Ser vivo que se alimenta de otros organismos y forma parte de los ecosistemas."
+  },
+  {
+	"name": "PAJARO",
+	"definition": "Animal vertebrado con plumas, alas y pico; muchas especies pueden volar."
+  },
+  {
+	"name": "MARIPOSA",
+	"definition": "Insecto con alas coloridas que participa en la polinización de algunas plantas."
+  },
+  {
+	"name": "ABEJA",
+	"definition": "Insecto muy importante para la polinización y el equilibrio de los ecosistemas."
+  },
+  {
+	"name": "JARDIN",
+	"definition": "Espacio donde se cultivan y cuidan plantas, flores o árboles."
+  },
+  {
+	"name": "SELVA",
+	"definition": "Ecosistema cálido y húmedo con gran diversidad de plantas y animales."
+  },
+  {
+	"name": "OCEANO",
+	"definition": "Gran masa de agua salada que cubre gran parte del planeta y alberga mucha biodiversidad."
+  },
+  {
+	"name": "LAGO",
+	"definition": "Cuerpo de agua rodeado de tierra que puede ser natural o artificial."
+  },
+  {
+	"name": "PIEDRA",
+	"definition": "Material sólido natural formado por minerales y presente en la superficie terrestre."
+  },
+  {
+	"name": "ARENA",
+	"definition": "Conjunto de partículas pequeñas de roca o minerales que se encuentra en playas, ríos y desiertos."
+  },
+  {
+	"name": "TRONCO",
+	"definition": "Parte principal y leñosa de un árbol que sostiene sus ramas y hojas."
+  },
+  {
+	"name": "RAMA",
+	"definition": "Extensión del tronco de un árbol donde pueden crecer hojas, flores o frutos."
+  },
+  {
+	"name": "PASTO",
+	"definition": "Planta pequeña y verde que cubre el suelo y sirve de alimento para algunos animales."
+  },
+  {
+	"name": "FRUTO",
+	"definition": "Parte de algunas plantas que protege las semillas y puede servir de alimento."
+  },
+  {
+	"name": "NATURALEZA",
+	"definition": "Conjunto de seres vivos, elementos y fenómenos que forman el mundo natural."
+  }
+]

@@ -1,0 +1,122 @@
+[
+  {
+	"name": "ESCUELA",
+	"definition": "Institución donde las personas reciben formación académica y desarrollan conocimientos, habilidades y valores."
+  },
+  {
+	"name": "COLEGIO",
+	"definition": "Centro educativo donde los estudiantes cursan diferentes grados y fortalecen su aprendizaje."
+  },
+  {
+	"name": "AULA",
+	"definition": "Espacio físico o virtual donde se realizan actividades de enseñanza y aprendizaje."
+  },
+  {
+	"name": "CLASE",
+	"definition": "Sesión educativa en la que se explica, practica o evalúa un tema determinado."
+  },
+  {
+	"name": "LIBRO",
+	"definition": "Recurso escrito que contiene información organizada para estudiar, consultar o aprender."
+  },
+  {
+	"name": "CUADERNO",
+	"definition": "Herramienta escolar usada para tomar apuntes, resolver ejercicios y organizar ideas."
+  },
+  {
+	"name": "LAPIZ",
+	"definition": "Instrumento usado para escribir, dibujar o realizar trazos sobre papel."
+  },
+  {
+	"name": "BORRADOR",
+	"definition": "Objeto utilizado para eliminar o corregir trazos realizados con lápiz."
+  },
+  {
+	"name": "PROFESOR",
+	"definition": "Persona encargada de orientar, enseñar y acompañar el proceso de aprendizaje de los estudiantes."
+  },
+  {
+	"name": "ESTUDIANTE",
+	"definition": "Persona que participa en un proceso educativo para adquirir conocimientos y habilidades."
+  },
+  {
+	"name": "TAREA",
+	"definition": "Actividad asignada para practicar, reforzar o demostrar lo aprendido."
+  },
+  {
+	"name": "EXAMEN",
+	"definition": "Prueba utilizada para evaluar conocimientos, habilidades o competencias."
+  },
+  {
+	"name": "LECTURA",
+	"definition": "Proceso de interpretar textos para comprender información, ideas o mensajes."
+  },
+  {
+	"name": "ESCRITURA",
+	"definition": "Habilidad de expresar ideas, información o sentimientos mediante palabras escritas."
+  },
+  {
+	"name": "MATEMATICA",
+	"definition": "Área del conocimiento que estudia números, operaciones, formas, medidas y relaciones."
+  },
+  {
+	"name": "CIENCIA",
+	"definition": "Conjunto de conocimientos obtenidos mediante observación, investigación y experimentación."
+  },
+  {
+	"name": "HISTORIA",
+	"definition": "Disciplina que estudia hechos, procesos y cambios ocurridos en el pasado."
+  },
+  {
+	"name": "GEOGRAFIA",
+	"definition": "Área que estudia la Tierra, sus espacios, paisajes, territorios y relaciones humanas."
+  },
+  {
+	"name": "IDIOMA",
+	"definition": "Sistema de comunicación verbal o escrito utilizado por una comunidad."
+  },
+  {
+	"name": "APRENDER",
+	"definition": "Proceso mediante el cual una persona adquiere conocimientos, habilidades o experiencias."
+  },
+  {
+	"name": "ENSEÑAR",
+	"definition": "Acción de guiar, explicar o facilitar conocimientos a otra persona."
+  },
+  {
+	"name": "NOTA",
+	"definition": "Resultado o calificación que representa el desempeño en una actividad académica."
+  },
+  {
+	"name": "TABLERO",
+	"definition": "Superficie utilizada para escribir, explicar contenidos o apoyar una clase."
+  },
+  {
+	"name": "TIZA",
+	"definition": "Material usado para escribir sobre tableros tradicionales."
+  },
+  {
+	"name": "REGLA",
+	"definition": "Instrumento usado para medir distancias o trazar líneas rectas."
+  },
+  {
+	"name": "MOCHILA",
+	"definition": "Bolso utilizado para transportar libros, cuadernos y útiles escolares."
+  },
+  {
+	"name": "BIBLIOTECA",
+	"definition": "Lugar donde se organizan libros y otros recursos para consulta, lectura o investigación."
+  },
+  {
+	"name": "UNIVERSIDAD",
+	"definition": "Institución de educación superior donde se estudian carreras profesionales y se desarrolla investigación."
+  },
+  {
+	"name": "CONOCIMIENTO",
+	"definition": "Información, comprensión o habilidad adquirida mediante estudio, experiencia o reflexión."
+  },
+  {
+	"name": "EDUCACION",
+	"definition": "Proceso de formación que desarrolla conocimientos, valores, habilidades y competencias."
+  }
+]

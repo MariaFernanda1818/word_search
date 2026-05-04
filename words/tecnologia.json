@@ -1,0 +1,122 @@
+[
+  {
+	"name": "CODIGO",
+	"definition": "Conjunto de instrucciones escritas en un lenguaje de programación para que una computadora realice una tarea."
+  },
+  {
+	"name": "SOFTWARE",
+	"definition": "Conjunto de programas, aplicaciones y datos que permiten que un dispositivo realice funciones específicas."
+  },
+  {
+	"name": "HARDWARE",
+	"definition": "Componentes físicos de un computador o dispositivo, como procesador, memoria, teclado o pantalla."
+  },
+  {
+	"name": "INTERNET",
+	"definition": "Red mundial que conecta dispositivos y permite compartir información, servicios y comunicación."
+  },
+  {
+	"name": "SERVIDOR",
+	"definition": "Equipo o sistema que almacena información y ofrece servicios a otros dispositivos llamados clientes."
+  },
+  {
+	"name": "CLIENTE",
+	"definition": "Dispositivo o programa que solicita información, recursos o servicios a un servidor."
+  },
+  {
+	"name": "ROUTER",
+	"definition": "Dispositivo de red que dirige el tráfico de datos entre diferentes redes o hacia internet."
+  },
+  {
+	"name": "SISTEMA",
+	"definition": "Conjunto de componentes relacionados que trabajan juntos para cumplir una función."
+  },
+  {
+	"name": "PROGRAMA",
+	"definition": "Secuencia de instrucciones que una computadora ejecuta para resolver una tarea o problema."
+  },
+  {
+	"name": "VARIABLE",
+	"definition": "Espacio de memoria usado para almacenar un dato que puede cambiar durante la ejecución de un programa."
+  },
+  {
+	"name": "FUNCION",
+	"definition": "Bloque de código reutilizable que realiza una tarea específica y puede recibir datos o devolver resultados."
+  },
+  {
+	"name": "OBJETO",
+	"definition": "Entidad de programación que agrupa datos y comportamientos relacionados."
+  },
+  {
+	"name": "CLASE",
+	"definition": "Molde o plantilla que define las propiedades y acciones que pueden tener los objetos."
+  },
+  {
+	"name": "METODO",
+	"definition": "Función que pertenece a una clase u objeto y describe una acción que este puede realizar."
+  },
+  {
+	"name": "SCRIPT",
+	"definition": "Archivo con instrucciones de código usado para automatizar o controlar comportamientos dentro de un sistema."
+  },
+  {
+	"name": "GODOT",
+	"definition": "Motor de videojuegos usado para crear juegos y aplicaciones interactivas en 2D y 3D."
+  },
+  {
+	"name": "PYTHON",
+	"definition": "Lenguaje de programación conocido por su sintaxis clara y su uso en inteligencia artificial, automatización y desarrollo web."
+  },
+  {
+	"name": "JAVA",
+	"definition": "Lenguaje de programación usado en aplicaciones empresariales, móviles, web y sistemas de gran escala."
+  },
+  {
+	"name": "JAVASCRIPT",
+	"definition": "Lenguaje de programación utilizado principalmente para crear interactividad en páginas y aplicaciones web."
+  },
+  {
+	"name": "HTML",
+	"definition": "Lenguaje de marcado usado para estructurar el contenido de una página web."
+  },
+  {
+	"name": "CSS",
+	"definition": "Lenguaje usado para definir colores, tamaños, posiciones y estilos visuales en una página web."
+  },
+  {
+	"name": "DATABASE",
+	"definition": "Sistema organizado para almacenar, consultar y administrar datos de manera eficiente."
+  },
+  {
+	"name": "API",
+	"definition": "Conjunto de reglas que permite que diferentes aplicaciones o sistemas se comuniquen entre sí."
+  },
+  {
+	"name": "LOGIN",
+	"definition": "Proceso mediante el cual un usuario se autentica para ingresar a un sistema o aplicación."
+  },
+  {
+	"name": "TOKEN",
+	"definition": "Dato de seguridad usado para validar la identidad, sesión o permisos de un usuario dentro de un sistema."
+  },
+  {
+	"name": "CLOUD",
+	"definition": "Modelo que permite usar almacenamiento, servidores y servicios informáticos a través de internet."
+  },
+  {
+	"name": "GITHUB",
+	"definition": "Plataforma para alojar código, controlar versiones y colaborar en proyectos de software."
+  },
+  {
+	"name": "DEBUG",
+	"definition": "Proceso de encontrar, analizar y corregir errores en un programa o sistema."
+  },
+  {
+	"name": "ERROR",
+	"definition": "Fallo o comportamiento inesperado que impide que un programa funcione correctamente."
+  },
+  {
+	"name": "KERNEL",
+	"definition": "Núcleo principal de un sistema operativo encargado de administrar recursos como memoria, procesos y dispositivos."
+  }
+]

@@ -1,9 +1,9 @@
 63f7b34db8d8cdea90c76aacccf841ec
-::res://::1777840487
+::res://::1777844951
 word_list_panel.gd::GDScript::4227253051518974047::1777840130::0::1::::WordListPanel<>RefCounted<><>0<>0<><>::
 word_search_config.gd::GDScript::9200250973650352445::1777798373::0::1::::WordSearchConfig<>RefCounted<><>0<>0<><>::
-word_search_controller.gd::GDScript::870851010093943018::1777840008::0::1::::<>Control<><>0<>0<><>::
-word_search_game.tscn::PackedScene::7482009698561396410::1777840130::0::1::::<><><>0<>0<><>::uid://mn3128b57fl7::::res://word_search_controller.gd
+word_search_controller.gd::GDScript::870851010093943018::1777840497::0::1::::<>Control<><>0<>0<><>::
+word_search_game.tscn::PackedScene::7482009698561396410::1777844951::0::1::::<><><>0<>0<><>::uid://mn3128b57fl7::::res://word_search_controller.gd
 word_search_generator.gd::GDScript::7418023747926011148::1777840080::0::1::::WordSearchGenerator<>RefCounted<><>0<>0<><>::
 ::res://shaders/::1777839919
 background_education.gdshader::Shader::483419538952130945::1777839919::0::1::::<><><>0<>0<><>::
@@ -27,7 +27,7 @@ fail-level.mp3::AudioStreamMP3::345231929875067362::1777794207::1777794208::1:::
 fail-word.mp3::AudioStreamMP3::3929329377378269530::1777794207::1777794208::1::::<><><>0<>0<>e95cea3c75dcd818d0c6e8773259f350<>res://.godot/imported/fail-word.mp3-db9fc00d009119ebc42910c888e87005.mp3str::
 pass-level.mp3::AudioStreamMP3::3603517873211959121::1777794207::1777840487::1::::<><><>0<>0<>ff8413fb4d87f360b14a1ee2e7b00982<>res://.godot/imported/pass-level.mp3-62e12fcce7c2d06c8f4a07840432ed9b.mp3str::
 win-game.mp3::AudioStreamMP3::6511926833293034816::1777794207::1777794208::1::::<><><>0<>0<>16c3e818160a230e13391a1f89d67f0f<>res://.godot/imported/win-game.mp3-4f8564a3ef789b3d1495099479b54698.mp3str::
-::res://words/::1777797936
-educacion.txt::TextFile::-1::1777797864::0::1::::<><><>0<>0<><>::
-naturaleza.txt::TextFile::-1::1777797852::0::1::::<><><>0<>0<><>::
+::res://words/::1777844951
+educacion.json::JSON::-1::1777844929::0::1::::<><><>0<>0<><>::
+naturaleza.json::JSON::-1::1777844951::0::1::::<><><>0<>0<><>::
 tecnologia.txt::TextFile::-1::1777797800::0::1::::<><><>0<>0<><>::

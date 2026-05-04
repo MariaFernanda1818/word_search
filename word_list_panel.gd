@@ -93,7 +93,7 @@ func mark_found(word: String) -> void:
 
 	var label: Label = labels[word]
 
-	label.text = word
+	label.text = "✓ " + word
 	label.add_theme_color_override("font_color", Color("#2ed573"))
 	label.modulate = Color(1, 1, 1, 0.65)
 

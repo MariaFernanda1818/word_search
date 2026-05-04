@@ -2,9 +2,9 @@ class_name WordSearchConfig
 
 
 
-const WORDS_TECHNOLOGY_FILE := "res://words/tecnologia.txt"
-const WORDS_EDUCATION_FILE := "res://words/educacion.txt"
-const WORDS_NATURE_FILE := "res://words/naturaleza.txt"
+const WORDS_TECHNOLOGY_FILE := "res://words/tecnologia.json"
+const WORDS_EDUCATION_FILE := "res://words/educacion.json"
+const WORDS_NATURE_FILE := "res://words/naturaleza.json"
 
 
 ##

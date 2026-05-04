@@ -33,6 +33,8 @@ var cell_correct_shader := preload("res://shaders/cell_correct.gdshader")
 var cell_wrong_shader := preload("res://shaders/cell_wrong.gdshader")
 var timer_theme_shader := preload("res://shaders/timer_theme.gdshader")
 var button_theme_shader := preload("res://shaders/button_theme.gdshader")
+var ui_panel_theme_shader := preload("res://shaders/ui_panel_theme.gdshader")
+var ui_text_theme_shader := preload("res://shaders/ui_text_theme.gdshader")
 
 var title_material: ShaderMaterial
 var timer_material: ShaderMaterial
@@ -43,6 +45,12 @@ var hover_cell_material: ShaderMaterial
 var selected_cell_material: ShaderMaterial
 var correct_cell_material: ShaderMaterial
 var wrong_cell_material: ShaderMaterial
+var menu_panel_material: ShaderMaterial
+var popup_panel_material: ShaderMaterial
+var score_material: ShaderMaterial
+var progress_material: ShaderMaterial
+var feedback_panel_material: ShaderMaterial
+var feedback_text_material: ShaderMaterial
 
 ##
 # Shaders de fondo por nivel.
@@ -92,6 +100,33 @@ var selected_cells: Array[Button] = []
 # Lista de palabras ya encontradas correctamente.
 ##
 var found_words := []
+
+##
+# Diccionario que guarda la definición educativa de cada palabra cargada.
+##
+var word_definitions := {}
+
+##
+# Sistema de puntaje y estadísticas.
+##
+var score := 0
+var wrong_attempts := 0
+var total_words_found := 0
+var total_time_remaining := 0
+
+##
+# Labels adicionales del HUD.
+##
+var score_label: Label
+var progress_label: Label
+var feedback_label: Label
+var feedback_panel: Panel
+
+##
+# Menú principal.
+##
+var menu_layer: CanvasLayer
+var game_started := false
 
 ##
 # Número total de filas del tablero.
@@ -211,8 +246,284 @@ func _ready() -> void:
 	if not validate_button.pressed.is_connected(_on_validate_pressed):
 		validate_button.pressed.connect(_on_validate_pressed)
 
+	validate_button.visible = false
+	result_label.visible = false
+
+	_show_main_menu()
+
+##
+# Muestra el menú principal del juego.
+##
+func _show_main_menu() -> void:
+	if menu_layer != null:
+		menu_layer.queue_free()
+
+	menu_layer = CanvasLayer.new()
+	menu_layer.layer = 200
+	add_child(menu_layer)
+
+	var screen_size := get_viewport_rect().size
+
+	var overlay := ColorRect.new()
+	overlay.color = Color(0, 0, 0, 0.65)
+	overlay.size = screen_size
+	menu_layer.add_child(overlay)
+
+	var panel := Panel.new()
+	panel.size = Vector2(540, 450)
+	panel.position = Vector2(
+		(screen_size.x - panel.size.x) / 2.0,
+		(screen_size.y - panel.size.y) / 2.0
+	)
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.08, 0.14, 0.96)
+	style.border_color = Color("#60a5fa")
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(22)
+	panel.add_theme_stylebox_override("panel", style)
+	panel.material = _create_ui_panel_material_by_theme("technology", "menu")
+	menu_layer.add_child(panel)
+	var title := Label.new()
+	title.text = "Sopa de Letras Educativa"
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 30)
+	title.add_theme_color_override("font_color", Color("#dbeafe"))
+	title.size = Vector2(540, 50)
+	title.position = Vector2(0, 35)
+	panel.add_child(title)
+
+	var subtitle := Label.new()
+	subtitle.text = "Aprende conceptos mientras encuentras palabras ocultas"
+	subtitle.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	subtitle.add_theme_font_size_override("font_size", 16)
+	subtitle.add_theme_color_override("font_color", Color("#cbd5e1"))
+	subtitle.size = Vector2(540, 35)
+	subtitle.position = Vector2(0, 90)
+	panel.add_child(subtitle)
+
+	var play_button := _create_menu_button("Jugar", Vector2(155, 155))
+	var instructions_button := _create_menu_button("Instrucciones", Vector2(155, 220))
+	var credits_button := _create_menu_button("Créditos", Vector2(155, 285))
+	var exit_button := _create_menu_button("Salir", Vector2(155, 350))
+
+	panel.add_child(play_button)
+	panel.add_child(instructions_button)
+	panel.add_child(credits_button)
+	panel.add_child(exit_button)
+
+	_apply_menu_button_shader(play_button, panel)
+	_apply_menu_button_shader(instructions_button, panel)
+	_apply_menu_button_shader(credits_button, panel)
+	_apply_menu_button_shader(exit_button, panel)
+
+	_connect_menu_button_sound(play_button)
+	_connect_menu_button_sound(instructions_button)
+	_connect_menu_button_sound(credits_button)
+	_connect_menu_button_sound(exit_button)
+
+	play_button.pressed.connect(_start_game_from_menu)
+	instructions_button.pressed.connect(_show_instructions_panel)
+	credits_button.pressed.connect(_show_credits_panel)
+	exit_button.pressed.connect(func(): get_tree().quit())
+
+
+func _apply_menu_button_shader(button: Button, parent: Control) -> void:
+	if button.has_meta("shader_bg"):
+		var old_bg = button.get_meta("shader_bg")
+		if is_instance_valid(old_bg):
+			old_bg.queue_free()
+		button.remove_meta("shader_bg")
+
+	var button_bg := Panel.new()
+	button_bg.position = button.position
+	button_bg.size = button.size
+	button_bg.mouse_filter = Control.MOUSE_FILTER_IGNORE
+
+	var bg_style := StyleBoxFlat.new()
+	bg_style.bg_color = Color.WHITE
+	bg_style.border_color = Color.TRANSPARENT
+	bg_style.set_border_width_all(0)
+	bg_style.set_corner_radius_all(12)
+	bg_style.set_content_margin_all(0)
+
+	button_bg.add_theme_stylebox_override("panel", bg_style)
+	button_bg.material = _create_menu_button_material()
+
+	parent.add_child(button_bg)
+
+	if button.get_parent() == parent:
+		parent.move_child(button_bg, button.get_index())
+		button.move_to_front()
+
+	button.set_meta("shader_bg", button_bg)
+	button.material = null
+
+	var transparent_style := StyleBoxFlat.new()
+	transparent_style.bg_color = Color(0, 0, 0, 0)
+	transparent_style.border_color = Color(0, 0, 0, 0)
+	transparent_style.set_border_width_all(0)
+	transparent_style.set_corner_radius_all(12)
+	transparent_style.set_content_margin_all(0)
+
+	button.add_theme_color_override("font_color", Color("#ffffff"))
+	button.add_theme_color_override("font_hover_color", Color("#ffffff"))
+	button.add_theme_color_override("font_pressed_color", Color("#ffffff"))
+	button.add_theme_color_override("font_disabled_color", Color("#cbd5e1"))
+	button.add_theme_font_size_override("font_size", 19)
+
+	button.add_theme_stylebox_override("normal", transparent_style)
+	button.add_theme_stylebox_override("hover", transparent_style)
+	button.add_theme_stylebox_override("pressed", transparent_style)
+	button.add_theme_stylebox_override("focus", transparent_style)
+	button.add_theme_stylebox_override("disabled", transparent_style)
+
+	_connect_button_hover_animation(button)
+
+func _create_menu_button_material() -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = button_theme_shader
+
+	material.set_shader_parameter("base_color", Color("#1d4ed8"))
+	material.set_shader_parameter("border_color", Color("#60a5fa"))
+	material.set_shader_parameter("glow_color", Color("#2563eb"))
+	material.set_shader_parameter("shine_color", Color("#93c5fd"))
+	material.set_shader_parameter("glow_strength", 0.34)
+	material.set_shader_parameter("pulse_speed", 0.95)
+	material.set_shader_parameter("shine_strength", 0.12)
+
+	return material
+
+func _create_menu_button(text: String, position: Vector2) -> Button:
+	var button := Button.new()
+	button.text = text
+	button.size = Vector2(230, 50)
+	button.position = position
+	button.focus_mode = Control.FOCUS_NONE
+	button.add_theme_font_size_override("font_size", 19)
+	return button
+
+
+func _start_game_from_menu() -> void:
+	if menu_layer != null:
+		menu_layer.queue_free()
+		menu_layer = null
+
+	game_started = true
+
+	validate_button.visible = true
+	result_label.visible = true
+
+	score = 0
+	wrong_attempts = 0
+	total_words_found = 0
+	total_time_remaining = 0
+
 	_start_level(0)
 
+
+func _show_instructions_panel() -> void:
+	_show_info_popup(
+		"Instrucciones",
+		"Objetivo:\n" +
+		"Encuentra todas las palabras ocultas antes de que termine el tiempo.\n\n" +
+
+		"Cómo jugar:\n" +
+		"Selecciona las letras que forman una palabra y presiona Validar.\n\n" +
+
+		"Reglas:\n" +
+		"Las palabras pueden estar en horizontal, vertical o diagonal.\n" +
+		"También pueden aparecer hacia adelante o hacia atrás.\n\n" +
+
+		"Puntaje:\n" +
+		"+100 puntos por cada palabra correcta.\n" +
+		"-20 puntos por cada error.\n" +
+		"Al terminar un nivel, recibes bonus por el tiempo restante."
+	)
+
+func _show_credits_panel() -> void:
+	_show_info_popup(
+		"Créditos",
+		"Proyecto Serious Game 2D\n\n" +
+
+		"Desarrollado en Godot Engine.\n\n" +
+
+		"Temáticas:\n" +
+		"Tecnología, educación y naturaleza.\n\n" +
+
+		"Recursos implementados:\n" +
+		"Niveles, temporizador, sonidos, shaders, sistema de puntaje,\n" +
+		"validación de palabras y retroalimentación educativa."
+	)
+
+
+func _show_info_popup(title_text: String, body_text: String) -> void:
+	var popup_layer := CanvasLayer.new()
+	popup_layer.layer = 250
+	add_child(popup_layer)
+
+	var screen_size: Vector2 = get_viewport_rect().size
+
+	var overlay := ColorRect.new()
+	overlay.color = Color(0, 0, 0, 0.60)
+	overlay.size = screen_size
+	popup_layer.add_child(overlay)
+
+	var panel := Panel.new()
+	panel.size = Vector2(760, 620)
+	panel.position = Vector2(
+		(screen_size.x - panel.size.x) / 2.0,
+		(screen_size.y - panel.size.y) / 2.0
+	)
+
+	var style := StyleBoxFlat.new()
+	style.bg_color = Color(0.05, 0.08, 0.14, 0.98)
+	style.border_color = Color("#60a5fa")
+	style.set_border_width_all(3)
+	style.set_corner_radius_all(20)
+	panel.add_theme_stylebox_override("panel", style)
+	panel.material = _create_ui_panel_material_by_theme(_get_active_theme(), "menu")
+	popup_layer.add_child(panel)
+
+	var title := Label.new()
+	title.text = title_text
+	title.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	title.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	title.add_theme_font_size_override("font_size", 32)
+	title.add_theme_color_override("font_color", Color("#dbeafe"))
+	title.material = _create_ui_text_material_by_theme(_get_active_theme(), "score")
+	title.size = Vector2(760, 70)
+	title.position = Vector2(0, 35)
+	panel.add_child(title)
+
+	var body := Label.new()
+	body.text = body_text
+	body.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	body.vertical_alignment = VERTICAL_ALIGNMENT_TOP
+	body.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	body.add_theme_color_override("font_color", Color("#e2e8f0"))
+	body.add_theme_font_size_override("font_size", 18)
+	body.size = Vector2(640, 380)
+	body.position = Vector2(60, 120)
+	panel.add_child(body)
+
+	var close_button := Button.new()
+	close_button.text = "Cerrar"
+	close_button.size = Vector2(210, 52)
+	close_button.position = Vector2(
+		(panel.size.x - close_button.size.x) / 2.0,
+		545
+	)
+	close_button.focus_mode = Control.FOCUS_NONE
+	close_button.add_theme_font_size_override("font_size", 19)
+	panel.add_child(close_button)
+
+	_apply_menu_button_shader(close_button, panel)
+	_connect_menu_button_sound(close_button)
+
+	close_button.pressed.connect(func():
+		popup_layer.queue_free()
+	)
 ##
 # Crea el fondo animado donde se aplicará el shader de cada nivel.
 ##
@@ -306,11 +617,18 @@ func _start_level(level_index: int) -> void:
 
 	_create_layout()
 	_create_timer_label()
+	_create_score_label()
+	_create_progress_label()
+	_create_feedback_label()
+	_update_score_label()
+	_update_progress_label()
 
 	word_panel = WordListPanel.new()
 
 	var level_theme: String = String(WordSearchConfig.LEVELS[current_level]["theme"])
 	word_panel.create(self, words, get_viewport_rect().size, level_theme)
+
+	_reposition_feedback_panel_under_word_panel()
 
 	_create_grid()
 
@@ -320,6 +638,127 @@ func _start_level(level_index: int) -> void:
 		_get_level_title(),
 		Color("#ffffff")
 	)
+
+##
+# Crea el label del puntaje.
+##
+func _create_score_label() -> void:
+	var screen_size := get_viewport_rect().size
+	var theme := _get_active_theme()
+
+	score_label = Label.new()
+	score_label.text = "Puntaje: 0"
+	score_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	score_label.size = Vector2(240, 35)
+	score_label.position = Vector2(screen_size.x - 440.0, 75.0)
+
+	score_material = _create_ui_text_material_by_theme(theme, "score")
+	score_label.material = score_material
+
+	score_label.add_theme_font_size_override("font_size", 22)
+	score_label.add_theme_color_override("font_color", Color.WHITE)
+	score_label.add_theme_constant_override("outline_size", 2)
+	score_label.add_theme_color_override("font_outline_color", Color("#020617"))
+
+	add_child(score_label)
+
+
+##
+# Crea el label de progreso.
+##
+func _create_progress_label() -> void:
+	var screen_size := get_viewport_rect().size
+	var theme := _get_active_theme()
+
+	progress_label = Label.new()
+	progress_label.text = "Progreso: 0 / 0"
+	progress_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	progress_label.size = Vector2(260, 35)
+	progress_label.position = Vector2(screen_size.x - 450.0, 110.0)
+
+	progress_material = _create_ui_text_material_by_theme(theme, "progress")
+	progress_label.material = progress_material
+
+	progress_label.add_theme_font_size_override("font_size", 21)
+	progress_label.add_theme_color_override("font_color", Color.WHITE)
+	progress_label.add_theme_constant_override("outline_size", 2)
+	progress_label.add_theme_color_override("font_outline_color", Color("#020617"))
+
+	add_child(progress_label)
+
+
+##
+# Crea el label de retroalimentación educativa.
+##
+func _create_feedback_label() -> void:
+	if feedback_panel != null:
+		feedback_panel.queue_free()
+		feedback_panel = null
+
+	var theme := _get_active_theme()
+
+	feedback_panel = Panel.new()
+	feedback_panel.size = Vector2(360, 210)
+	feedback_panel.position = Vector2(35, 555)
+
+	var panel_style := StyleBoxFlat.new()
+	panel_style.bg_color = Color(1, 1, 1, 0.08)
+	panel_style.border_color = Color(1, 1, 1, 0.14)
+	panel_style.set_border_width_all(2)
+	panel_style.set_corner_radius_all(14)
+	feedback_panel.add_theme_stylebox_override("panel", panel_style)
+
+	feedback_panel_material = _create_ui_panel_material_by_theme(theme, "feedback")
+	feedback_panel.material = feedback_panel_material
+
+	add_child(feedback_panel)
+
+	feedback_label = Label.new()
+	feedback_label.text = "Encuentra una palabra para ver su significado."
+	feedback_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	feedback_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	feedback_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	feedback_label.size = Vector2(320, 170)
+	feedback_label.position = Vector2(20, 20)
+
+	feedback_text_material = _create_ui_text_material_by_theme(theme, "feedback")
+	feedback_label.material = feedback_text_material
+
+	feedback_label.add_theme_font_size_override("font_size", 17)
+	feedback_label.add_theme_color_override("font_color", Color.WHITE)
+	feedback_label.add_theme_constant_override("outline_size", 1)
+	feedback_label.add_theme_color_override("font_outline_color", Color("#020617"))
+
+	feedback_panel.add_child(feedback_label)
+
+func _update_score_label() -> void:
+	if score_label == null:
+		return
+
+	score_label.text = "Puntaje: " + str(score)
+
+
+func _update_progress_label() -> void:
+	if progress_label == null:
+		return
+
+	progress_label.text = "Progreso: " + str(found_words.size()) + " / " + str(words.size())
+
+
+func _update_feedback_label(word: String) -> void:
+	if feedback_label == null:
+		return
+
+	feedback_label.text = word + "\n" + _get_word_definition(word)
+
+
+func _get_word_definition(word: String) -> String:
+	var normalized_word := word.strip_edges().to_upper()
+
+	if word_definitions.has(normalized_word):
+		return word_definitions[normalized_word]
+
+	return "Palabra relacionada con la temática del nivel."
 
 ##
 # Crea y aplica shaders a las celdas según la temática del nivel.
@@ -597,6 +1036,7 @@ func _clear_current_level() -> void:
 	found_words.clear()
 	words.clear()
 	letters.clear()
+	word_definitions.clear()
 
 	if grid != null:
 		for child in grid.get_children():
@@ -611,6 +1051,24 @@ func _clear_current_level() -> void:
 		timer_label.queue_free()
 		timer_label = null
 
+	if score_label != null:
+		score_label.queue_free()
+		score_label = null
+
+	if progress_label != null:
+		progress_label.queue_free()
+		progress_label = null
+
+	if feedback_panel != null:
+		feedback_panel.queue_free()
+		feedback_panel = null
+
+	feedback_label = null
+	score_material = null
+	progress_material = null
+	feedback_panel_material = null
+	feedback_text_material = null
+
 	if end_layer != null:
 		end_layer.queue_free()
 		end_layer = null
@@ -618,14 +1076,16 @@ func _clear_current_level() -> void:
 	if validate_button != null:
 		validate_button.disabled = false
 
-
-
 ##
-# Carga palabras aleatorias desde el archivo de la temática actual.
+# Carga palabras aleatorias desde un archivo JSON.
 #
-# @param amount Cantidad de palabras que se deben cargar para el nivel.
-# @param max_length Longitud máxima permitida según el tamaño del tablero.
-# @param words_file Archivo de palabras de la temática actual.
+# El JSON debe tener esta estructura:
+# [
+#   {
+#     "name": "GODOT",
+#     "definition": "Motor de videojuegos usado para crear juegos 2D y 3D."
+#   }
+# ]
 ##
 func _load_random_words(amount: int, max_length: int, words_file: String) -> void:
 	var file := FileAccess.open(words_file, FileAccess.READ)
@@ -633,19 +1093,56 @@ func _load_random_words(amount: int, max_length: int, words_file: String) -> voi
 	if file == null:
 		push_error("No se pudo abrir el archivo de palabras: " + words_file)
 		words.clear()
+		word_definitions.clear()
+		return
+
+	var json_text := file.get_as_text()
+	file.close()
+
+	var parsed_data = JSON.parse_string(json_text)
+
+	if parsed_data == null:
+		push_error("El archivo JSON no tiene un formato válido: " + words_file)
+		words.clear()
+		word_definitions.clear()
+		return
+
+	if typeof(parsed_data) != TYPE_ARRAY:
+		push_error("El JSON debe ser un arreglo de objetos: " + words_file)
+		words.clear()
+		word_definitions.clear()
 		return
 
 	var all_words := []
+	word_definitions.clear()
 
-	while not file.eof_reached():
-		var line := file.get_line().strip_edges().to_upper()
+	for item in parsed_data:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
 
-		if line != "" and not all_words.has(line) and line.length() <= max_length:
-			all_words.append(line)
+		if not item.has("name"):
+			continue
 
-	file.close()
+		var word := String(item["name"]).strip_edges().to_upper()
+
+		if word == "":
+			continue
+
+		if word.length() > max_length:
+			continue
+
+		if all_words.has(word):
+			continue
+
+		var definition := "Palabra relacionada con la temática del nivel."
+
+		if item.has("definition"):
+			definition = String(item["definition"]).strip_edges()
+
+		all_words.append(word)
+		word_definitions[word] = definition
+
 	all_words.shuffle()
-
 	words.clear()
 
 	for i in range(min(amount, all_words.size())):
@@ -835,16 +1332,17 @@ func _get_selected_positions() -> Array:
 	return positions
 
 ##
-# Compara si dos listas de posiciones son iguales.
+# Compara si la selección coincide con las posiciones reales de una palabra.
 #
-# @return true si coinciden
+# Valida en orden normal o inverso.
+# Esto evita aceptar letras dispersas o seleccionadas sin secuencia.
 ##
 func _same_positions(selected_positions: Array, word_positions: Array) -> bool:
 	if selected_positions.size() != word_positions.size():
 		return false
 
-	for position in word_positions:
-		if not selected_positions.has(position):
+	for position in selected_positions:
+		if not word_positions.has(position):
 			return false
 
 	return true
@@ -852,13 +1350,21 @@ func _same_positions(selected_positions: Array, word_positions: Array) -> bool:
 ##
 # Marca una palabra como correcta.
 #
-# @param word palabra encontrada
+# Suma puntaje, actualiza progreso y muestra retroalimentación educativa.
 ##
 func _register_correct_word(word: String) -> void:
 	_play_sfx(correct_sound, -10.0, 1.0)
-	
+
+	score += 100
+	total_words_found += 1
+
 	found_words.append(word)
+
 	_show_message("Correcto: " + word, Color("#2ed573"))
+	_update_feedback_label(word)
+	_update_score_label()
+	_update_progress_label()
+
 	word_panel.mark_found(word)
 
 	for cell in selected_cells:
@@ -867,16 +1373,18 @@ func _register_correct_word(word: String) -> void:
 		_animate_cell(cell, 1.15)
 
 	selected_cells.clear()
-	
+
 	if found_words.size() == words.size():
 		_win_level()
-
 ##
 # Finaliza el nivel como exitoso cuando se encuentran todas las palabras.
 ##
 func _win_level() -> void:
 	level_finished = true
-
+	var time_bonus := int(ceil(time_left))
+	score += time_bonus
+	total_time_remaining += time_bonus
+	_update_score_label()
 	if current_level == WordSearchConfig.LEVELS.size() - 1:
 		_play_sfx(final_win_sound, -8.0, 1.0)
 	else:
@@ -906,18 +1414,43 @@ func _win_level() -> void:
 
 		_show_end_message(
 			"Juego completado",
-			"Superaste todos los niveles",
+			_get_final_summary_text(),
 			Color("#2ed573"),
 			"Jugar de nuevo"
 		)
 
 ##
+# Construye el resumen final del juego.
+##
+func _get_final_summary_text() -> String:
+	return "Puntaje final: " + str(score) + "\n" + \
+		"Palabras encontradas: " + str(total_words_found) + "\n" + \
+		"Errores cometidos: " + str(wrong_attempts) + "\n" + \
+		"Tiempo restante total: " + _format_seconds(total_time_remaining)
+
+
+func _format_seconds(total_seconds: int) -> String:
+	var minutes := total_seconds / 60
+	var seconds := total_seconds % 60
+
+	return "%02d:%02d" % [minutes, seconds]
+
+##
 # Marca una selección incorrecta.
+#
+# Resta puntaje y registra el error.
 ##
 func _register_wrong_selection() -> void:
 	_play_sfx(wrong_sound, -11.0, 0.95)
-	_show_message("No es una palabra válida", Color("#ff4757"))
 
+	wrong_attempts += 1
+	score = max(0, score - 20)
+
+	_show_message("No es una palabra válida", Color("#ff4757"))
+	_update_score_label()
+
+	if feedback_label != null:
+		feedback_label.text = "La selección debe corresponder a una palabra oculta completa."
 	for cell in selected_cells:
 		_apply_wrong_style(cell)
 		await get_tree().create_timer(0.8).timeout
@@ -928,7 +1461,6 @@ func _register_wrong_selection() -> void:
 			_apply_normal_style(cell)
 
 	selected_cells.clear()
-
 
 ##
 # Construye la palabra a partir de las letras seleccionadas.
@@ -1073,6 +1605,9 @@ func _apply_wrong_style(button: Button) -> void:
 # Actualiza el temporizador del nivel.
 ##
 func _process(delta: float) -> void:
+	if not game_started:
+		return
+
 	if level_finished:
 		return
 
@@ -1278,10 +1813,12 @@ func _show_end_message(
 	var description_label := Label.new()
 	description_label.text = description_text
 	description_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	description_label.vertical_alignment = VERTICAL_ALIGNMENT_CENTER
+	description_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	description_label.add_theme_font_size_override("font_size", 18)
 	description_label.add_theme_color_override("font_color", Color("#f1f5f9"))
-	description_label.size = Vector2(500, 35)
-	description_label.position = Vector2(0, 95)
+	description_label.size = Vector2(440, 95)
+	description_label.position = Vector2(30, 85)
 	end_panel.add_child(description_label)
 
 	retry_button = Button.new()
@@ -1289,7 +1826,7 @@ func _show_end_message(
 	retry_button.size = Vector2(230, 48)
 	retry_button.position = Vector2(
 		(end_panel.size.x - retry_button.size.x) / 2,
-		170
+		205
 	)
 
 	_apply_button_shader(retry_button, end_panel, true)
@@ -1309,10 +1846,20 @@ func _on_retry_pressed() -> void:
 		return
 
 	if end_action == "retry_first":
+		game_started = true
+		score = 0
+		wrong_attempts = 0
+		total_words_found = 0
+		total_time_remaining = 0
 		_start_level(0)
 		return
 
 	if end_action == "restart":
+		game_started = true
+		score = 0
+		wrong_attempts = 0
+		total_words_found = 0
+		total_time_remaining = 0
 		_start_level(0)
 		return
 
@@ -1673,6 +2220,13 @@ func _play_sfx(sound: AudioStream, volume_db: float = -4.0, pitch: float = 1.0) 
 	sfx_player.pitch_scale = pitch
 	sfx_player.play()
 
+func _play_menu_button_sound() -> void:
+	_play_sfx(select_sound, -16.0, 0.90)
+
+func _connect_menu_button_sound(button: Button) -> void:
+	if not button.pressed.is_connected(_play_menu_button_sound):
+		button.pressed.connect(_play_menu_button_sound)
+
 ##
 # Reproduce la música de fondo.
 ##
@@ -1847,3 +2401,141 @@ func _ensure_grid_nodes() -> void:
 		grid = GridContainer.new()
 		grid.name = "GridContainer"
 		grid_scroll.add_child(grid)
+
+func _get_active_theme() -> String:
+	if current_level >= 0 and current_level < WordSearchConfig.LEVELS.size():
+		return String(WordSearchConfig.LEVELS[current_level]["theme"])
+
+	return "technology"
+
+
+func _create_ui_panel_material_by_theme(theme: String, panel_type: String = "default") -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = ui_panel_theme_shader
+
+	match theme:
+		"technology":
+			material.set_shader_parameter("base_color", Color("#061426"))
+			material.set_shader_parameter("border_color", Color("#2563eb"))
+			material.set_shader_parameter("glow_color", Color("#1d4ed8"))
+			material.set_shader_parameter("accent_color", Color("#60a5fa"))
+			material.set_shader_parameter("glow_strength", 0.34)
+			material.set_shader_parameter("pulse_speed", 1.30)
+			material.set_shader_parameter("pattern_strength", 0.12)
+			material.set_shader_parameter("shine_strength", 0.08)
+
+		"education":
+			material.set_shader_parameter("base_color", Color("#24190b"))
+			material.set_shader_parameter("border_color", Color("#b7791f"))
+			material.set_shader_parameter("glow_color", Color("#d6a84f"))
+			material.set_shader_parameter("accent_color", Color("#fde68a"))
+			material.set_shader_parameter("glow_strength", 0.30)
+			material.set_shader_parameter("pulse_speed", 0.85)
+			material.set_shader_parameter("pattern_strength", 0.10)
+			material.set_shader_parameter("shine_strength", 0.06)
+
+		"nature":
+			material.set_shader_parameter("base_color", Color("#052e16"))
+			material.set_shader_parameter("border_color", Color("#22c55e"))
+			material.set_shader_parameter("glow_color", Color("#16a34a"))
+			material.set_shader_parameter("accent_color", Color("#86efac"))
+			material.set_shader_parameter("glow_strength", 0.32)
+			material.set_shader_parameter("pulse_speed", 0.75)
+			material.set_shader_parameter("pattern_strength", 0.10)
+			material.set_shader_parameter("shine_strength", 0.06)
+
+		_:
+			material.set_shader_parameter("base_color", Color("#111827"))
+			material.set_shader_parameter("border_color", Color("#70a1ff"))
+			material.set_shader_parameter("glow_color", Color("#3742fa"))
+			material.set_shader_parameter("accent_color", Color("#ffffff"))
+			material.set_shader_parameter("glow_strength", 0.25)
+			material.set_shader_parameter("pulse_speed", 1.0)
+			material.set_shader_parameter("pattern_strength", 0.08)
+			material.set_shader_parameter("shine_strength", 0.05)
+
+	if panel_type == "feedback":
+		material.set_shader_parameter("glow_strength", 0.42)
+		material.set_shader_parameter("pattern_strength", 0.14)
+		material.set_shader_parameter("shine_strength", 0.10)
+
+	if panel_type == "menu":
+		material.set_shader_parameter("glow_strength", 0.38)
+		material.set_shader_parameter("shine_strength", 0.11)
+
+	return material
+
+
+func _create_ui_text_material_by_theme(theme: String, text_type: String = "default") -> ShaderMaterial:
+	var material := ShaderMaterial.new()
+	material.shader = ui_text_theme_shader
+
+	match theme:
+		"technology":
+			material.set_shader_parameter("text_color", Color("#dbeafe"))
+			material.set_shader_parameter("glow_color", Color("#60a5fa"))
+			material.set_shader_parameter("shadow_color", Color("#020617"))
+			material.set_shader_parameter("glow_strength", 0.35)
+			material.set_shader_parameter("pulse_speed", 1.30)
+			material.set_shader_parameter("scanline_strength", 0.08)
+			material.set_shader_parameter("distortion_strength", 0.0012)
+
+		"education":
+			material.set_shader_parameter("text_color", Color("#fef3c7"))
+			material.set_shader_parameter("glow_color", Color("#facc15"))
+			material.set_shader_parameter("shadow_color", Color("#1f1608"))
+			material.set_shader_parameter("glow_strength", 0.28)
+			material.set_shader_parameter("pulse_speed", 0.85)
+			material.set_shader_parameter("scanline_strength", 0.045)
+			material.set_shader_parameter("distortion_strength", 0.0008)
+
+		"nature":
+			material.set_shader_parameter("text_color", Color("#dcfce7"))
+			material.set_shader_parameter("glow_color", Color("#86efac"))
+			material.set_shader_parameter("shadow_color", Color("#052e16"))
+			material.set_shader_parameter("glow_strength", 0.30)
+			material.set_shader_parameter("pulse_speed", 0.75)
+			material.set_shader_parameter("scanline_strength", 0.04)
+			material.set_shader_parameter("distortion_strength", 0.0008)
+
+		_:
+			material.set_shader_parameter("text_color", Color("#ffffff"))
+			material.set_shader_parameter("glow_color", Color("#70a1ff"))
+			material.set_shader_parameter("shadow_color", Color("#000000"))
+			material.set_shader_parameter("glow_strength", 0.30)
+			material.set_shader_parameter("pulse_speed", 1.0)
+			material.set_shader_parameter("scanline_strength", 0.05)
+			material.set_shader_parameter("distortion_strength", 0.001)
+
+	if text_type == "score":
+		material.set_shader_parameter("glow_strength", 0.42)
+		material.set_shader_parameter("scanline_strength", 0.06)
+
+	if text_type == "progress":
+		material.set_shader_parameter("glow_strength", 0.34)
+		material.set_shader_parameter("scanline_strength", 0.045)
+
+	if text_type == "feedback":
+		material.set_shader_parameter("glow_strength", 0.24)
+		material.set_shader_parameter("scanline_strength", 0.025)
+		material.set_shader_parameter("distortion_strength", 0.0004)
+
+	return material
+
+func _reposition_feedback_panel_under_word_panel() -> void:
+	if feedback_panel == null:
+		return
+
+	if word_panel == null or word_panel.panel == null:
+		return
+
+	var screen_size := get_viewport_rect().size
+	var margin := 18.0
+
+	var new_y := word_panel.panel.position.y + word_panel.panel.size.y + margin
+	var max_y := screen_size.y - feedback_panel.size.y - 35.0
+
+	feedback_panel.position = Vector2(
+		35.0,
+		min(new_y, max_y)
+	)

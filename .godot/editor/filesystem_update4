@@ -15,3 +15,9 @@ res://shaders/word_panel_theme.gdshader
 res://word_search_controller.gd
 res://word_search_generator.gd
 res://word_list_panel.gd
+res://words/educacion.json
+res://words/naturaleza.json
+res://words/tecnologia.json
+res://word_search_config.gd
+res://shaders/ui_panel_theme.gdshader
+res://shaders/ui_text_theme.gdshader
